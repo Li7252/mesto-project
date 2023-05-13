@@ -3,7 +3,7 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  width: 358px;
+  width: calc(100% - 72px);
   margin: 0 auto;
   border: 0;
   box-sizing: border-box;
@@ -17,7 +17,7 @@
 
 @media screen and (max-width: 620px){
   .popup__input {
-    width: 238px;
+    width: calc(100% - 44px);
     margin: 0 21px;
   }
 }

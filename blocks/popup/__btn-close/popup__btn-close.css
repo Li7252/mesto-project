@@ -2,7 +2,7 @@
   background-image: url('../../../images/close-icon.svg');
   background-color: rgba(0, 0, 0, 0);
   background-position: center;
-  object-fit: cover;
+  background-size: cover;
   border: 0;
   position: absolute;
   display: flex;

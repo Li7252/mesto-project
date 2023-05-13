@@ -3,13 +3,14 @@
   background-color: #000;
   background-position: center;
   background-repeat: no-repeat;
-  border: 1px #fff solid;
-  object-fit: cover;
+  border: 2px #fff solid;
+  border-radius: 2px;
+  background-size: 22px;
   width: 150px;
   height: 50px;
   display: flex;
   align-self: center;
-  margin-left: 244px;
+  margin: 0 0 0 auto;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
@@ -19,16 +20,11 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 820px) {
-  .profile__add-button {
-    margin-left: 25%;
-  }
-}
-
 @media screen and (max-width: 768px) {
   .profile__add-button {
     margin: 34px 0 0;
     width: 282px;
+    background-size: 16px;
   }
 }
 
