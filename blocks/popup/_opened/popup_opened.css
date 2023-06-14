@@ -1,14 +1,3 @@
 .popup_opened {
   display: flex;
-  animation: opening 0.5s linear;
-}
-
-@keyframes opening {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
-}
-
-@keyframes closing {
-  0% {opacity: 1;}
-  100% {opacity: 0;}
 }
