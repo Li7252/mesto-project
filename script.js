@@ -13,7 +13,11 @@ const closePopup = (element) => {
     element.classList.remove("popup_opened");
 };
 
-btnEdit.addEventListener("click", () => openPopup(popupProfile));
+btnEdit.addEventListener("click", () => {
+  nameInput.value = profileName.textContent;
+  aboutMyselfInput.value = profileAboutMyself.textContent;
+  openPopup(popupProfile);
+});
 
 btnCloseProfile.addEventListener("click", () => closePopup(popupProfile));
 
@@ -25,8 +29,7 @@ const aboutMyselfInput = document.querySelector('input[name="about-myself"]');
 const profileName = document.querySelector(".profile__name");
 const profileAboutMyself = document.querySelector(".profile__about-myself");
 
-nameInput.value = profileName.textContent;
-aboutMyselfInput.value = profileAboutMyself.textContent;
+
 
 // Редактирование имени и информации о себе
 
@@ -34,8 +37,6 @@ function handlerFormSubmit(evt) {
     evt.preventDefault();
     const name = nameInput.value;
     const aboutMyself = aboutMyselfInput.value;
-    nameInput.textContent = name;
-    aboutMyselfInput.textContent = aboutMyself;
     profileName.textContent = name;
     profileAboutMyself.textContent = aboutMyself;
     closePopup(popupProfile);
@@ -85,15 +86,17 @@ const deleteButton = (element) => {
   element.remove();
 };
 
+const template = document.querySelector("#card").content;
+const popup = document.querySelector("#popup-image");
+
 const renderCards = function (element) {
     const { link, name } = element;
 
-    const template = document.querySelector("#card").content;
     const card = template.querySelector(".element").cloneNode(true);
 
     card.querySelector(".element__image").src = link;
     card.querySelector(".element__image").alt = name;
-    card.querySelector(".element__title").alt = name;
+    card.querySelector(".element__title").title = name;
     card.querySelector(".element__delete").addEventListener(
         "click",
         () => deleteButton(card)
@@ -101,11 +104,9 @@ const renderCards = function (element) {
     card.querySelector(".element__image").addEventListener(
         "click",
         function () {
-            const source = this.getAttribute("src");
-            const title = this.getAttribute("alt");
-            const popup = document.querySelector("#popup-image");
-            popup.querySelector("img").src = source;
-            popup.querySelector("img").title = title;
+            popup.querySelector("img").src = link;
+            popup.querySelector("img").alt = name;
+            popup.querySelector("img").title = name;
             openPopup(popupImage);
         }
     );
