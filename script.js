@@ -88,6 +88,7 @@ const deleteButton = (element) => {
 
 const template = document.querySelector("#card").content;
 const popup = document.querySelector("#popup-image");
+const popupImageTitle = document.querySelector(".popup__image-title");
 
 const renderCards = function (element) {
     const { link, name } = element;
@@ -96,7 +97,7 @@ const renderCards = function (element) {
 
     card.querySelector(".element__image").src = link;
     card.querySelector(".element__image").alt = name;
-    card.querySelector(".element__title").title = name;
+    card.querySelector(".element__title").textContent = name;
     card.querySelector(".element__delete").addEventListener(
         "click",
         () => deleteButton(card)
@@ -106,7 +107,7 @@ const renderCards = function (element) {
         function () {
             popup.querySelector("img").src = link;
             popup.querySelector("img").alt = name;
-            popup.querySelector("img").title = name;
+            popupImageTitle.textContent = name;
             openPopup(popupImage);
         }
     );
