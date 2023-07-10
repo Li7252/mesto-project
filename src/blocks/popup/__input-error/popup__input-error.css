@@ -1,0 +1,13 @@
+.popup__input-error {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: calc(100% - 72px);
+    min-height: 30px;
+    color: #F00;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    box-sizing: border-box;
+}

@@ -3,7 +3,7 @@
   margin: 40px auto 52px;
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 @media screen and (max-width: 1024px){

@@ -4,14 +4,13 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="./pages/index.css" />
         <title>Mesto</title>
     </head>
     <body>
         <div class="page">
             <header class="header">
                 <img
-                    src="./images/logo.svg"
+                    src="<%=require('./images/logo.svg')%>"
                     alt="Логотип"
                     class="header__logo"
                 />
@@ -19,7 +18,7 @@
             <main class="container">
                 <section class="profile">
                     <img
-                        src="./images/image.png"
+                        src="<%=require('./images/image.png')%>"
                         alt="Фото профиля"
                         class="profile__avatar"
                     />
@@ -66,6 +65,7 @@
                         name="edit-profile"
                         action="profile"
                         class="popup__form"
+                        novalidate
                     >
                         <input
                             type="text"
@@ -73,14 +73,28 @@
                             placeholder="Имя"
                             value=""
                             class="popup__input"
+                            id="popup__input-name"
+                            minlength="2"
+                            maxlength="40"
+                            required
+                            pattern="^[a-zA-ZА-Яа-я0-9 -]+$"
+                            data-error-message="Поле может содержать латинские буквы, кириллические буквы, знаки дефиса и пробелы."
                         />
+                        <span class="popup__input-error popup__input-name-error"></span>
                         <input
                             type="text"
                             name="about-myself"
                             placeholder="О себе"
                             value=""
                             class="popup__input"
+                            id="popup__about-myself"
+                            minlength="2"
+                            maxlength="200"
+                            required
+                            pattern="^[a-zA-ZА-Яа-я0-9 -]+$"
+                            data-error-message="Поле может содержать латинские буквы, кириллические буквы, знаки дефиса и пробелы."
                         />
+                        <span class="popup__input-error popup__about-myself-error"></span>
                         <button type="submit" class="popup__btn-save">
                             Сохранить
                         </button>
@@ -96,6 +110,7 @@
                         name="edit-cards"
                         action="cards"
                         class="popup__form"
+                        novalidate
                     >
                         <input
                             type="text"
@@ -103,14 +118,24 @@
                             value=""
                             placeholder="Название"
                             class="popup__input"
+                            id="popup__input-title"
+                            minlength="2"
+                            maxlength="30"
+                            required
+                            pattern="^[a-zA-ZА-Яа-я0-9 -]+$"
+                            data-error-message="Поле может содержать латинские буквы, кириллические буквы, знаки дефиса и пробелы."
                         />
+                        <span class="popup__input-error popup__input-title-error"></span>
                         <input
-                            type="text"
+                            type="url"
                             name="source"
                             value=""
                             placeholder="Ссылка на картинку"
                             class="popup__input"
+                            id="popup__input-source"
+                            required
                         />
+                        <span class="popup__input-error popup__input-source-error"></span>
                         <button type="submit" class="popup__btn-save">
                             Сохранить
                         </button>
@@ -120,7 +145,6 @@
             <div id="popup-image" class="popup">
                 <div class="popup__image">
                     <button
-                        onclick="closePopup(popupImage)"
                         type="button"
                         class="popup__btn-close"
                     ></button>
@@ -129,6 +153,5 @@
                 </div>
             </div>
         </div>
-        <script src="./script.js"></script>
     </body>
 </html>
