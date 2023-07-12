@@ -45,6 +45,7 @@ const template = document.querySelector("#card").content;
 const popup = document.querySelector("#popup-image");
 const popupImageTitle = document.querySelector(".popup__image-title");
 const buttonSubmit = document.querySelector(".popup__btn-save");
+const imageCard = popup.querySelector('img');
 
 const renderCards = function (element) {
     const { link, name } = element;
@@ -60,8 +61,8 @@ const renderCards = function (element) {
     card.querySelector(".element__image").addEventListener(
         "click",
         function () {
-            popup.querySelector("img").src = link;
-            popup.querySelector("img").alt = name;
+            imageCard.src = link;
+            imageCard.alt = name;
             popupImageTitle.textContent = name;
             openPopup(popupImage);
         }
@@ -90,8 +91,7 @@ function cardsFormSubmit(evt) {
     const name = titleInput.value;
     const link = sourceInput.value;
     elements.prepend(renderCards({ name, link }));
-    titleInput.value = "";
-    sourceInput.value = "";
+    evt.target.reset()
     closePopup(popupCards);
 }
 
@@ -102,8 +102,5 @@ function keyHandler(evt) {
         cardsFormSubmit(evt);
     }
 }
-
-titleInput.addEventListener("keydown", keyHandler);
-sourceInput.addEventListener("keydown", keyHandler);
 
 export { cardsInit, cardsFormSubmit };

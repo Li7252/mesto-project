@@ -7,10 +7,12 @@ const btnCloseProfile = popupProfile.querySelector(".popup__btn-close");
 
 const openPopup = (element) => {
     element.classList.add("popup_opened");
+    document.addEventListener('keydown', closeByEscape); 
 };
 
 const closePopup = (element) => {
     element.classList.remove("popup_opened");
+    document.removeEventListener('keydown', closeByEscape);
 };
 
 btnEdit.addEventListener("click", () => {
@@ -47,39 +49,44 @@ popupProfileForm.addEventListener("submit", handlerFormSubmit);
 const popupCards = document.querySelector("#popup-cards");
 const btnAdd = document.querySelector(".profile__add-button");
 const btnCloseAddCard = popupCards.querySelector(".popup__btn-close");
+const buttonSave = popupCards.querySelector(".popup__btn-save");
 
-btnAdd.addEventListener("click", () => openPopup(popupCards));
+btnAdd.addEventListener("click", () => {
+    openPopup(popupCards);
+    buttonSave.classList.add("popup__btn-save_disabled");
+    buttonSave.disabled = true;
+});
 
 btnCloseAddCard.addEventListener("click", () => closePopup(popupCards));
 
 // Закрытие модального окна по клику на overlay
 
-popupProfile.addEventListener("click", (evt) => {
+popupProfile.addEventListener("mousedown", (evt) => {
     if (evt.target === popupProfile) {
         closePopup(popupProfile);
     }
 });
 
-popupCards.addEventListener("click", (evt) => {
+popupCards.addEventListener("mousedown", (evt) => {
     if (evt.target === popupCards) {
         closePopup(popupCards);
     }
 });
 
 const popupImage = document.querySelector("#popup-image");
-popupImage.addEventListener("click", (evt) => {
+popupImage.addEventListener("mousedown", (evt) => {
     if (evt.target === popupImage) {
         closePopup(popupImage);
     }
 });
 
 // Закрытие модального окна по нажатию на кнопку Esc
-document.addEventListener("keydown", (evt) => {
-    if (evt.key === "Escape") {
-        closePopup(popupProfile);
-        closePopup(popupCards);
-        closePopup(popupImage);
+
+function closeByEscape(evt) {
+    if (evt.key === 'Escape') {
+      const openedPopup = document.querySelector('.popup_opened');
+    closePopup(openedPopup);
     }
-});
+  }
 
 export { openPopup, closePopup };

@@ -1,23 +1,23 @@
 // Добавить класс с ошибкой
-const showInputError = (formSelector, inputSelector, errorMessage) => {
+const showInputError = (formSelector, inputSelector, errorMessage, settings) => {
     const errorElement = formSelector.querySelector(
         `.${inputSelector.id}-error`
     );
     errorElement.textContent = errorMessage;
-    errorElement.classList.add("popup__input-error_active");
+    errorElement.classList.add(settings.errorClass);
 };
 
 // Убрать класс с ошибкой
-const hideInputError = (formSelector, inputSelector) => {
+const hideInputError = (formSelector, inputSelector, settings) => {
     const errorElement = formSelector.querySelector(
         `.${inputSelector.id}-error`
     );
-    errorElement.classList.remove("popup__input-error_active");
+    errorElement.classList.remove(settings.errorClass);
     errorElement.textContent = "";
 };
 
 // Проверка валидности полей
-const checkInputValidity = (formSelector, inputSelector) => {
+const checkInputValidity = (formSelector, inputSelector, settings) => {
     if (inputSelector.validity.patternMismatch) {
         inputSelector.setCustomValidity(inputSelector.dataset.errorMessage);
     } else {
@@ -27,10 +27,11 @@ const checkInputValidity = (formSelector, inputSelector) => {
         showInputError(
             formSelector,
             inputSelector,
-            inputSelector.validationMessage
+            inputSelector.validationMessage,
+            settings
         );
     } else {
-        hideInputError(formSelector, inputSelector);
+        hideInputError(formSelector, inputSelector, settings);
     }
 };
 
@@ -41,39 +42,39 @@ const hasInvalidInput = (inputList) => {
 };
 
 // Активация и деактивация кнопки
-const toggleButtonState = (inputList, submitButtonSelector) => {
+const toggleButtonState = (inputList, submitButtonSelector, settings) => {
     if (hasInvalidInput(inputList)) {
-        submitButtonSelector.classList.add("popup__btn-save_disabled");
+        submitButtonSelector.classList.add(settings.inactiveButtonClass);
         submitButtonSelector.disabled = true;
     } else {
-        submitButtonSelector.classList.remove("popup__btn-save_disabled");
+        submitButtonSelector.classList.remove(settings.inactiveButtonClass);
         submitButtonSelector.disabled = false;
     }
 };
 
 // Проверка данных при вводе
-const setEventListeners = (formSelector) => {
+const setEventListeners = (formSelector, settings) => {
     const inputList = Array.from(
-        formSelector.querySelectorAll(".popup__input")
+        formSelector.querySelectorAll(settings.inputSelector)
     );
-    const submitButtonSelector = formSelector.querySelector(".popup__btn-save");
-    toggleButtonState(inputList, submitButtonSelector);
+    const submitButtonSelector = formSelector.querySelector(settings.submitButtonSelector);
+    toggleButtonState(inputList, submitButtonSelector, settings);
     inputList.forEach((inputSelector) => {
         inputSelector.addEventListener("input", function () {
-            checkInputValidity(formSelector, inputSelector);
-            toggleButtonState(inputList, submitButtonSelector);
+            checkInputValidity(formSelector, inputSelector, settings);
+            toggleButtonState(inputList, submitButtonSelector, settings);
         });
     });
 };
 
 // Проверка данных при отправке
-const enableValidation = () => {
-    const formList = Array.from(document.querySelectorAll(".popup__form"));
+const enableValidation = (settings) => {
+    const formList = Array.from(document.querySelectorAll(settings.formSelector));
     formList.forEach((formSelector) => {
         formSelector.addEventListener("submit", function (evt) {
             evt.preventDefault();
         });
-        setEventListeners(formSelector);
+        setEventListeners(formSelector, settings);
     });
 };
 
