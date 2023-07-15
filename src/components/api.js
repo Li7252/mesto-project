@@ -5,19 +5,26 @@ const config = {
     },
 };
 
+const getResponseData = (res) => {
+    if (!res.ok) {
+        return Promise.reject(`Ошибка: ${res.status}`); 
+    }
+    return res.json();
+} 
+
 const api = {
     async getUser() {
         return fetch(
             "https://nomoreparties.co/v1/plus-cohort-26/users/me",
             config
-        ).then((res) => res.json());
+        ).then((res) => getResponseData(res));
     },
 
     async getCards() {
         return fetch(
             "https://nomoreparties.co/v1/plus-cohort-26/cards",
             config
-        ).then((res) => res.json());
+        ).then((res) => getResponseData(res));
     },
 
     async patchProfile(data) {
@@ -25,14 +32,14 @@ const api = {
             method: "PATCH",
             headers: config.headers,
             body: JSON.stringify(data),
-        }).then((res) => res.json());
+        }).then((res) => getResponseData(res));
     },
     async postCard(data) {
         return fetch("https://nomoreparties.co/v1/plus-cohort-26/cards", {
             method: "POST",
             headers: config.headers,
             body: JSON.stringify(data),
-        }).then((res) => res.json());
+        }).then((res) => getResponseData(res));
     },
 
     async deleteCard(cardId) {
@@ -42,7 +49,7 @@ const api = {
                 method: "DELETE",
                 headers: config.headers,
             }
-        ).then((res) => res.json());
+        ).then((res) => getResponseData(res));
     },
 
     async putLike(cardId) {
@@ -52,7 +59,7 @@ const api = {
                 method: "PUT",
                 headers: config.headers,
             }
-        ).then((res) => res.json());
+        ).then((res) => getResponseData(res));
     },
 
     async deleteLike(cardId) {
@@ -62,7 +69,7 @@ const api = {
                 method: "DELETE",
                 headers: config.headers,
             }
-        ).then((res) => res.json());
+        ).then((res) => getResponseData(res));
     },
 
     async patchAvatar(data) {
@@ -70,7 +77,7 @@ const api = {
             method: "PATCH",
             headers: config.headers,
             body: JSON.stringify(data),
-        }).then((res) => res.json());
+        }).then((res) => getResponseData(res));
     }
 };
 

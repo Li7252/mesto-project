@@ -1,4 +1,6 @@
 import api from "./api.js";
+import { renderLoading } from "./utils.js";
+import { disabledButton } from "./validate.js";
 
 // 1. Работа модальных окон
 // Открытие и закрытие модального окна
@@ -11,9 +13,10 @@ const profileAvatarPopup = document.querySelector("#popup-avatar");
 const profileAvatarContainer = document.querySelector(
     ".profile__avatar-container"
 );
-const profileAvatarForm = document.querySelector('#popup-avatar__form');
-const profileAvatarFormButton = profileAvatarForm.querySelector('.popup__btn-save');
-const avatarInput = profileAvatarForm.querySelector('#popup__input-source')
+const profileAvatarForm = document.querySelector("#popup-avatar__form");
+const profileAvatarFormButton =
+    profileAvatarForm.querySelector(".popup__btn-save");
+const avatarInput = profileAvatarForm.querySelector("#popup__input-source");
 
 const openPopup = (element) => {
     element.classList.add("popup_opened");
@@ -51,19 +54,19 @@ const buttonSave = popupCards.querySelector(".popup__btn-save");
 
 // Редактирование имени и информации о себе
 
-async function handlerFormSubmit(evt) {
+async function handlerUserFormSubmit(evt) {
     try {
         evt.preventDefault();
-        buttonForm.textContent = "Сохранение...";
+        renderLoading(buttonForm, true);
         const name = nameInput.value;
         const about = aboutMyselfInput.value;
         const updateUser = await api.patchProfile({ name, about });
         profileName.textContent = updateUser.name;
         profileAboutMyself.textContent = updateUser.about;
-        buttonForm.textContent = "Сохранить";
+        renderLoading(buttonForm, false);
         closePopup(popupProfile);
     } catch (e) {
-        buttonForm.textContent = "Сохранить";
+        renderLoading(buttonForm, false);
         console.error(e);
     }
 }
@@ -71,25 +74,24 @@ async function handlerFormSubmit(evt) {
 async function handlerAvatarFormSubmit(evt) {
     try {
         evt.preventDefault();
-        profileAvatarFormButton.textContent = "Сохранение...";
+        renderLoading(profileAvatarFormButton, true);
         const avatar = avatarInput.value;
-        const updateAvatar = await api.patchAvatar({avatar})
+        const updateAvatar = await api.patchAvatar({ avatar });
         profileAvatar.setAttribute("src", updateAvatar.avatar);
-        profileAvatarFormButton.textContent = "Сохранить";
+        renderLoading(profileAvatarFormButton, false);
         closePopup(profileAvatarPopup);
     } catch (e) {
-        profileAvatarFormButton.textContent = "Сохранить";
+        renderLoading(profileAvatarFormButton, false);
         console.error(e);
     }
 }
 
-popupProfileForm.addEventListener("submit", handlerFormSubmit);
+popupProfileForm.addEventListener("submit", handlerUserFormSubmit);
 profileAvatarForm.addEventListener("submit", handlerAvatarFormSubmit);
 
 btnAdd.addEventListener("click", () => {
+    disabledButton("popup__btn-save_disabled", buttonSave, true);
     openPopup(popupCards);
-    buttonSave.classList.add("popup__btn-save_disabled");
-    buttonSave.disabled = true;
 });
 
 btnCloseAddCard.addEventListener("click", () => closePopup(popupCards));
@@ -124,11 +126,12 @@ profileAvatarPopup.addEventListener("mousedown", (evt) => {
     }
 });
 
-const buttonClosePopupAvatar = profileAvatarPopup.querySelector(
-    ".popup__btn-close"
-);
+const buttonClosePopupAvatar =
+    profileAvatarPopup.querySelector(".popup__btn-close");
 
-buttonClosePopupAvatar.addEventListener('click', () => closePopup(profileAvatarPopup))
+buttonClosePopupAvatar.addEventListener("click", () =>
+    closePopup(profileAvatarPopup)
+);
 // Закрытие модального окна по нажатию на кнопку Esc
 
 function closeByEscape(evt) {
@@ -138,10 +141,8 @@ function closeByEscape(evt) {
     }
 }
 
-const getUser = async () => {
+const setUser = async (user) => {
     try {
-        const user = await api.getUser();
-
         const { name, about, avatar } = user;
 
         profileName.textContent = name;
@@ -152,6 +153,4 @@ const getUser = async () => {
     }
 };
 
-getUser();
-
-export { openPopup, closePopup };
+export { openPopup, closePopup, setUser };

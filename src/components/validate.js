@@ -1,5 +1,10 @@
 // Добавить класс с ошибкой
-const showInputError = (formSelector, inputSelector, errorMessage, settings) => {
+const showInputError = (
+    formSelector,
+    inputSelector,
+    errorMessage,
+    settings
+) => {
     const errorElement = formSelector.querySelector(
         `.${inputSelector.id}-error`
     );
@@ -41,14 +46,27 @@ const hasInvalidInput = (inputList) => {
     });
 };
 
+const disabledButton = (inactiveButtonClass, submitButtonSelector, isAdded) => {
+    isAdded
+        ? submitButtonSelector.classList.add(inactiveButtonClass)
+        : submitButtonSelector.classList.remove(inactiveButtonClass);
+    submitButtonSelector.disabled = isAdded;
+};
+
 // Активация и деактивация кнопки
 const toggleButtonState = (inputList, submitButtonSelector, settings) => {
     if (hasInvalidInput(inputList)) {
-        submitButtonSelector.classList.add(settings.inactiveButtonClass);
-        submitButtonSelector.disabled = true;
+        disabledButton(
+            settings.inactiveButtonClass,
+            submitButtonSelector,
+            true
+        );
     } else {
-        submitButtonSelector.classList.remove(settings.inactiveButtonClass);
-        submitButtonSelector.disabled = false;
+        disabledButton(
+            settings.inactiveButtonClass,
+            submitButtonSelector,
+            false
+        );
     }
 };
 
@@ -57,7 +75,9 @@ const setEventListeners = (formSelector, settings) => {
     const inputList = Array.from(
         formSelector.querySelectorAll(settings.inputSelector)
     );
-    const submitButtonSelector = formSelector.querySelector(settings.submitButtonSelector);
+    const submitButtonSelector = formSelector.querySelector(
+        settings.submitButtonSelector
+    );
     toggleButtonState(inputList, submitButtonSelector, settings);
     inputList.forEach((inputSelector) => {
         inputSelector.addEventListener("input", function () {
@@ -69,7 +89,9 @@ const setEventListeners = (formSelector, settings) => {
 
 // Проверка данных при отправке
 const enableValidation = (settings) => {
-    const formList = Array.from(document.querySelectorAll(settings.formSelector));
+    const formList = Array.from(
+        document.querySelectorAll(settings.formSelector)
+    );
     formList.forEach((formSelector) => {
         formSelector.addEventListener("submit", function (evt) {
             evt.preventDefault();
@@ -78,4 +100,4 @@ const enableValidation = (settings) => {
     });
 };
 
-export { enableValidation };
+export { enableValidation, disabledButton };

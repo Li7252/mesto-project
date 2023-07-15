@@ -1,9 +1,8 @@
 import { openPopup, closePopup } from "./modal.js";
 import api from "./api.js";
+import {renderLoading} from './utils.js'
 
 // 2. Шесть карточек "из коробки"
-
-const userId = "b3e532ed0e6f677800a86526";
 
 const elements = document.querySelector(".elements");
 
@@ -41,8 +40,10 @@ const renderCards = function (element, deleteble = false) {
     card.querySelector(".element__like-count").textContent =
         element.likes?.length;
 
+    const ownerId = element.owner._id;
+
     element.likes.forEach((item) => {
-        if (item._id === userId) {
+        if (item._id === ownerId) {
             card.querySelector(".element__like").classList.add(
                 "element__like_active"
             );
@@ -89,9 +90,8 @@ const renderCards = function (element, deleteble = false) {
     return card;
 };
 
-const cardsInit = async () => {
+const cardsInit = async (userId, cards) => {
     try {
-        const cards = await api.getCards();
         cards.forEach((item) => {
             elements.append(renderCards(item, item.owner._id === userId));
         });
@@ -109,17 +109,17 @@ const buttonForm = popupCardsForm.querySelector(".popup__btn-save");
 
 async function cardsFormSubmit(evt) {
     try {
-        buttonForm.textContent = "Сохранение...";
+        renderLoading(buttonForm, true)
         evt.preventDefault();
         const name = titleInput.value;
         const link = sourceInput.value;
         const addedCard = await api.postCard({ name, link });
         elements.prepend(renderCards(addedCard, true));
         evt.target.reset();
-        buttonForm.textContent = "Сохранить";
+        renderLoading(buttonForm, false)
         closePopup(popupCards);
     } catch (e) {
-        buttonForm.textContent = "Сохранить";
+        renderLoading(buttonForm, false)
         console.log(e);
     }
 }
