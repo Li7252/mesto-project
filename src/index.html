@@ -17,11 +17,13 @@
             </header>
             <main class="container">
                 <section class="profile">
-                    <img
-                        src="<%=require('./images/image.png')%>"
-                        alt="Фото профиля"
-                        class="profile__avatar"
-                    />
+                    <div class="profile__avatar-container">
+                        <img
+                            src="<%=require('./images/image.png')%>"
+                            alt="Фото профиля"
+                            class="profile__avatar"
+                        />
+                    </div>
                     <div class="profile__info">
                         <div class="profile__info-container">
                             <h1 class="profile__name">Жак-Ив Кусто</h1>
@@ -44,10 +46,13 @@
                             <img src="" alt="" class="element__image" />
                             <div class="element__text-container">
                                 <h2 class="element__title"></h2>
+                                <div class="element__like-container">
                                 <button
                                     type="button"
                                     class="element__like"
                                 ></button>
+                                <p class="element__like-count">6</p>
+                            </div>
                             </div>
                         </article>
                     </template>
@@ -91,7 +96,7 @@
                             minlength="2"
                             maxlength="200"
                             required
-                            pattern="^[a-zA-ZА-Яа-я -]+$"
+                            pattern="^[a-zA-ZА-Яа-я ,-]+$"
                             data-error-message="Поле может содержать латинские буквы, кириллические буквы, знаки дефиса и пробелы."
                         />
                         <span class="popup__input-error popup__about-myself-error"></span>
@@ -150,6 +155,33 @@
                     ></button>
                     <img src="" alt="" class="popup__image-item" />
                     <p class="popup__image-title"></p>
+                </div>
+            </div>
+            <div id="popup-avatar" class="popup">
+                <div class="popup__container popup__avatar">
+                    <button type="button" class="popup__btn-close"></button>
+                    <h2 class="popup__title">Обновить аватар</h2>
+                    <form
+                        id="popup-avatar__form"
+                        name="edit-avatar"
+                        action="avatar"
+                        class="popup__form"
+                        novalidate
+                    >
+                        <input
+                            type="url"
+                            name="source"
+                            value=""
+                            placeholder="Ссылка на картинку"
+                            class="popup__input"
+                            id="popup__input-source"
+                            required
+                        />
+                        <span class="popup__input-error popup__input-source-error"></span>
+                        <button type="submit" class="popup__btn-save">
+                            Сохранить
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

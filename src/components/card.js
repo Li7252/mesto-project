@@ -1,53 +1,36 @@
 import { openPopup, closePopup } from "./modal.js";
+import api from "./api.js";
 
 // 2. Шесть карточек "из коробки"
 
+const userId = "b3e532ed0e6f677800a86526";
+
 const elements = document.querySelector(".elements");
-const initialCards = [
-    {
-        name: "Архыз",
-        link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-    },
-    {
-        name: "Челябинская область",
-        link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-    },
-    {
-        name: "Иваново",
-        link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
-    },
-    {
-        name: "Камчатка",
-        link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
-    },
-    {
-        name: "Холмогорский район",
-        link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
-    },
-    {
-        name: "Байкал",
-        link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
-    },
-];
 
 const popupImage = document.querySelector("#popup-image");
+
 const btnCloseImage = popupImage.querySelector(".popup__btn-close");
 
 btnCloseImage.addEventListener("click", () => closePopup(popupImage));
 
 // Удаление карточки
 
-const deleteButton = (element) => {
-    element.remove();
+const deleteButton = async (element, card) => {
+    try {
+        await api.deleteCard(card._id);
+        element.remove();
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 const template = document.querySelector("#card").content;
 const popup = document.querySelector("#popup-image");
 const popupImageTitle = document.querySelector(".popup__image-title");
 const buttonSubmit = document.querySelector(".popup__btn-save");
-const imageCard = popup.querySelector('img');
+const imageCard = popup.querySelector("img");
 
-const renderCards = function (element) {
+const renderCards = function (element, deleteble = false) {
     const { link, name } = element;
 
     const card = template.querySelector(".element").cloneNode(true);
@@ -55,29 +38,66 @@ const renderCards = function (element) {
     card.querySelector(".element__image").src = link;
     card.querySelector(".element__image").alt = name;
     card.querySelector(".element__title").textContent = name;
-    card.querySelector(".element__delete").addEventListener("click", () =>
-        deleteButton(card)
-    );
+    card.querySelector(".element__like-count").textContent =
+        element.likes?.length;
+
+    element.likes.forEach((item) => {
+        if (item._id === userId) {
+            card.querySelector(".element__like").classList.add(
+                "element__like_active"
+            );
+        }
+    });
+
+    if (deleteble) {
+        card.querySelector(".element__delete").addEventListener("click", () =>
+            deleteButton(card, element)
+        );
+    } else {
+        card.querySelector(".element__delete").remove();
+    }
     card.querySelector(".element__image").addEventListener(
         "click",
-        function () {
+        async function () {
             imageCard.src = link;
             imageCard.alt = name;
             popupImageTitle.textContent = name;
             openPopup(popupImage);
         }
     );
-    card.querySelector(".element__like").addEventListener("click", function () {
-        this.classList.toggle("element__like_active");
-    });
+    card.querySelector(".element__like").addEventListener(
+        "click",
+        async function () {
+            try {
+                if (!this.classList.contains("element__like_active")) {
+                    const addLike = await api.putLike(element._id);
+                    card.querySelector(".element__like-count").textContent =
+                        addLike.likes.length;
+                    this.classList.add("element__like_active");
+                } else {
+                    const addLike = await api.deleteLike(element._id);
+                    card.querySelector(".element__like-count").textContent =
+                        addLike.likes.length;
+                    this.classList.remove("element__like_active");
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    );
 
     return card;
 };
 
-const cardsInit = () => {
-    initialCards.forEach((item) => {
-        elements.append(renderCards(item));
-    });
+const cardsInit = async () => {
+    try {
+        const cards = await api.getCards();
+        cards.forEach((item) => {
+            elements.append(renderCards(item, item.owner._id === userId));
+        });
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 // 4. Добавление карточки
@@ -85,14 +105,23 @@ const popupCards = document.querySelector("#popup-cards");
 const popupCardsForm = popupCards.querySelector("#popup-cards__form");
 const titleInput = document.querySelector('input[name="title"]');
 const sourceInput = document.querySelector('input[name="source"]');
+const buttonForm = popupCardsForm.querySelector(".popup__btn-save");
 
-function cardsFormSubmit(evt) {
-    evt.preventDefault();
-    const name = titleInput.value;
-    const link = sourceInput.value;
-    elements.prepend(renderCards({ name, link }));
-    evt.target.reset()
-    closePopup(popupCards);
+async function cardsFormSubmit(evt) {
+    try {
+        buttonForm.textContent = "Сохранение...";
+        evt.preventDefault();
+        const name = titleInput.value;
+        const link = sourceInput.value;
+        const addedCard = await api.postCard({ name, link });
+        elements.prepend(renderCards(addedCard, true));
+        evt.target.reset();
+        buttonForm.textContent = "Сохранить";
+        closePopup(popupCards);
+    } catch (e) {
+        buttonForm.textContent = "Сохранить";
+        console.log(e);
+    }
 }
 
 popupCardsForm.addEventListener("submit", cardsFormSubmit);
